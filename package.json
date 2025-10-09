@@ -23,8 +23,7 @@
 		"tailwind-merge": "^3.3.1",
 		"tailwindcss": "^4.1.11",
 		"typescript": "^5.8.3",
-		"tdl": "^7.3.0",
-  		"tdlib-prebuilt": "^0.1005000.26"
+		"tdl": "^7.3.0"
 	},
 	"devDependencies": {
 		"@tailwindcss/typography": "^0.5.16",
