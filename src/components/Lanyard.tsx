@@ -7,7 +7,7 @@ export const Status: FC = () => {
 		userId: "matin7675",
 		socket: true,
 	});
-
+	while (true){
 	const getColor = () => {
 		switch (status?.discord_status) {
 			case "online":
@@ -71,3 +71,4 @@ export const Status: FC = () => {
 		</span>
 	);
 };
+}
