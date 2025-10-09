@@ -1,90 +1,105 @@
 import classnames from "classnames";
 import type { FC } from "react";
 import { useEffect, useState } from "react";
+import { Client } from "tdl";
+import { TDLib } from "tdl-tdlib-addon"; // اگر نیاز به باینری داری، از prebuilt استفاده کن
 
-// تنظیمات اولیه
-const TELEGRAM_BOT_TOKEN = "8274938896:AAF40S6bLWZVnsptzbu84S28v1vapl6g3Eo"; // توکن ربات تلگرام
-const USER_ID = "360273138"; // آیدی عددی کاربر تلگرام
+// تنظیمات - جای این‌ها رو با مقادیر خودت پر کن
+const API_ID = 23835670; // api_id از my.telegram.org
+const API_HASH = " 4ef2ce9e9ef89e5377e95c043264fc41"; // api_hash از my.telegram.org
+const USER_ID = 360273138; // آیدی عددی کاربر هدف (مثلاً خودت برای تست)
 
 export const Status: FC = () => {
   const [loading, setLoading] = useState(true);
   const [status, setStatus] = useState<string | null>(null);
 
-  // دریافت وضعیت کاربر از تلگرام
   useEffect(() => {
-    const fetchStatus = async () => {
-      try {
-        // فرض می‌کنیم از API تلگرام استفاده می‌کنیم
-        const response = await fetch(
-          `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getChat?chat_id=${USER_ID}`
-        );
-        const data = await response.json();
+    let client: Client | null = null;
 
-        if (data.ok) {
-          // بررسی وضعیت کاربر
-          const userStatus = data.result.status; // این فرضی است، تلگرام مستقیماً اینو نمیده
-          setStatus(userStatus || "offline");
+    const initClient = async () => {
+      try {
+        // ایجاد کلاینت TDL
+        const tdlib = new TDLib(); // یا از prebuilt استفاده کن
+        client = new Client(tdlib, {
+          apiId: API_ID,
+          apiHash: API_HASH,
+          databaseDirectory: "./tdlib", // فولدر برای ذخیره session
+          filesDirectory: "./files",
+          verbosityLevel: 1, // برای لاگ کمتر
+        });
+
+        // لاگین (اولین بار کد تأیید وارد کن)
+        await client.connectAndLogin(() => ({
+          getPhoneNumber: () => "+98xxxxxxxxxx", // شماره تلفنت با کد کشور
+          getAuthCode: () => {
+            // اینجا کد تأیید رو دستی وارد کن (برای تولید، از رابط کاربری استفاده کن)
+            return prompt("Enter the auth code sent to your phone:");
+          },
+          getPassword: () => prompt("Enter 2FA password if enabled:"),
+        }));
+
+        // دریافت وضعیت کاربر
+        const user = await client.invoke({
+          _: "getUser",
+          user_id: USER_ID,
+        });
+
+        // پردازش status
+        let userStatus: string;
+        if (user.status._ === "userStatusOnline") {
+          userStatus = "online";
+        } else if (user.status._ === "userStatusOffline") {
+          userStatus = "offline";
+        } else if (user.status._ === "userStatusRecently") {
+          userStatus = "recently";
+        } else if (user.status._ === "userStatusLastWeek") {
+          userStatus = "last week";
+        } else if (user.status._ === "userStatusLastMonth") {
+          userStatus = "last month";
         } else {
-          setStatus("offline");
+          userStatus = "unknown";
         }
+
+        setStatus(userStatus);
       } catch (error) {
-        console.error("Error fetching Telegram status:", error);
+        console.error("Error fetching status:", error);
         setStatus("offline");
       } finally {
         setLoading(false);
       }
     };
 
-    fetchStatus();
+    initClient();
+
+    // cleanup
+    return () => {
+      if (client) {
+        client.destroy();
+      }
+    };
   }, []);
 
-  // تنظیم رنگ و متن وضعیت
+  // تابع getColor (همون قبلی)
   const getColor = () => {
     switch (status) {
       case "online":
-        return {
-          status: "online",
-          color: "bg-green-500",
-        };
-      case "offline":
-        return {
-          status: "offline",
-          color: "bg-gray-500 dark:bg-gray-200",
-        };
+        return { status: "online", color: "bg-green-500" };
       case "recently":
-        return {
-          status: "recently seen",
-          color: "bg-yellow-500",
-        };
-      case "last_seen_week":
-        return {
-          status: "last seen within a week",
-          color: "bg-orange-500",
-        };
+        return { status: "recently seen", color: "bg-yellow-500" };
+      case "last week":
+        return { status: "last seen within a week", color: "bg-orange-500" };
+      case "last month":
+        return { status: "last seen within a month", color: "bg-red-500" };
       default:
-        return {
-          status: "unknown",
-          color: "bg-gray-500 dark:bg-gray-200",
-        };
+        return { status: "offline", color: "bg-gray-500 dark:bg-gray-200" };
     }
   };
 
-  // تنظیم متن وضعیت
+  // تابع getStatus (همون قبلی، با تنظیمات جدید)
   const getStatus = () => {
-    if (loading || !status) return "loading...";
-
-    switch (status) {
-      case "online":
-        return "online";
-      case "offline":
-        return "offline";
-      case "recently":
-        return "recently seen";
-      case "last_seen_week":
-        return "last seen within a week";
-      default:
-        return "unknown";
-    }
+    if (loading) return "loading...";
+    if (!status) return "offline";
+    return getColor().status;
   };
 
   return (
