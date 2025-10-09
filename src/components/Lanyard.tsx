@@ -28,16 +28,6 @@ export const Status: FC = () => {
           verbosityLevel: 1, // برای لاگ کمتر
         });
 
-        // لاگین (اولین بار کد تأیید وارد کن)
-        await client.connectAndLogin(() => ({
-          getPhoneNumber: () => "+98xxxxxxxxxx", // شماره تلفنت با کد کشور
-          getAuthCode: () => {
-            // اینجا کد تأیید رو دستی وارد کن (برای تولید، از رابط کاربری استفاده کن)
-            return prompt("Enter the auth code sent to your phone:");
-          },
-          getPassword: () => prompt("Enter 2FA password if enabled:"),
-        }));
-
         // دریافت وضعیت کاربر
         const user = await client.invoke({
           _: "getUser",
