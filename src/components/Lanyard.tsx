@@ -4,10 +4,10 @@ import { useLanyard } from "react-use-lanyard";
 
 export const Status: FC = () => {
 	const { loading, status } = useLanyard({
-		userId: "matin7675",
+		userId: "768556287729336340",
 		socket: true,
 	});
-	while (true){
+
 	const getColor = () => {
 		switch (status?.discord_status) {
 			case "online":
@@ -71,4 +71,3 @@ export const Status: FC = () => {
 		</span>
 	);
 };
-}
