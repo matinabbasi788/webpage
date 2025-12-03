@@ -7,23 +7,61 @@ tags:
     - contest
 ---
 
-![crowd picture](/02-Charbug2/01.jpg)
+import { Image } from "astro:assets";
+
+<Image
+  src="/02-Charbug2/01.jpg"
+  alt="crowd"
+  width={500}
+  height={300}
+  className="rounded-xl"
+/>
 
 it was a very good contest in Isfahan(were i came from) and we participate in this contest.
 we solved 3 out of 12 Problems. I want to show you Problem A with it's answer.
 but first you can see my team "shokolat" in the scoreboard.
-![scoreboard picture](/02-Charbug2/02.png)
+<Image
+  src="/02-Charbug2/02.png"
+  alt="crowd"
+  width={500}
+  height={300}
+  className="rounded-xl"
+/>
 
 now let's solve problem A together.
 this is the problem A setament.
-![problem A setament picture](/02-Charbug2/03.png)
+<Image
+  src="/02-Charbug2/03.png"
+  alt="crowd"
+  width={500}
+  height={300}
+  className="rounded-xl"
+/>
+
 
 so it will give us "n" and ask us minimum number we can add to this number to make it perfect.
 for example 25 is 5x5 so 25 is already a perfect number and we have to print 0 for this test case.
 a good aproch is we write a loop and continue until find a number that is perfect number.
 we can check this with "n ** 0.5" in python and if it's int so it's a perfect number.
-i will add my code solution later.
+```python
+for _ in range(int(input())):
+    n = int(input())
+    ans = 0
+    while n ** 0.5 != int(n ** 0.5):
+        n += 1
+        ans += 1
+    print(ans)
+```
+
 
 
 and here you can watch this video in persian about CharBug2 contest:
-<iframe width="560" height="315" src="https://www.youtube.com/embed/AE30WbtUuto?si=LqeQlTSdcMdo5n7x" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe
+width="100%"
+height="315"
+src="https://www.youtube.com/embed/AE30WbtUuto?si=LqeQlTSdcMdo5n7x"
+title="YouTube video"
+frameborder="0"
+allowfullscreen
+style="display:block; margin-bottom:8px;">
+</iframe>
