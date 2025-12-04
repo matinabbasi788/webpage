@@ -16,6 +16,7 @@ export const Status: FC = () => {
 	const [data, setData] = useState<TelegramData | null>(null);
 	const [error, setError] = useState(false);
 	const [imageError, setImageError] = useState(false);
+	const [fallbackError, setFallbackError] = useState(false);
 
 	useEffect(() => {
 		const fetchTelegramData = async () => {
@@ -154,7 +155,7 @@ export const Status: FC = () => {
 						{/* Animated glow effect */}
 						<div className="absolute inset-0 bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 rounded-full blur-xl opacity-50 group-hover:opacity-70 animate-pulse transition-opacity duration-300" />
 						
-						{data.profile_image && !imageError ? (
+						{!fallbackError ? (
 							/* Beautiful Profile Image with 3D effect */
 							<div 
 								className="relative w-16 h-16 rounded-full overflow-hidden shadow-2xl hover:shadow-blue-500/50 transition-all duration-500 hover:scale-110 group"
@@ -166,19 +167,27 @@ export const Status: FC = () => {
 								{/* Gradient overlay for depth */}
 								<div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-black/20 z-10" />
 								
-								{/* Profile image */}
+								{/* Profile image with fallback to avatar.jpg */}
 								<img
-									src={data.profile_image}
+									src={data.profile_image || "/avatar.jpg"}
 									alt="Telegram Profile"
 									className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-									onError={() => setImageError(true)}
+									onError={() => {
+										if (data.profile_image) {
+											// If API image fails, try fallback to avatar.jpg
+											setImageError(true);
+										} else {
+											// If avatar.jpg also fails, show icon
+											setFallbackError(true);
+										}
+									}}
 								/>
 								
 								{/* Shine effect on hover */}
 								<div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 z-20" />
 							</div>
 						) : (
-							/* Fallback: 3D Telegram Icon Container */
+							/* Fallback: 3D Telegram Icon Container (only if both API image and avatar.jpg fail) */
 							<div 
 								className="relative w-14 h-14 rounded-full bg-gradient-to-br from-blue-500 via-blue-600 to-blue-700 dark:from-blue-400 dark:via-blue-500 dark:to-blue-600 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110"
 								style={{
