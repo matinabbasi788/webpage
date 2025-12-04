@@ -7,7 +7,7 @@ import pagefind from "astro-pagefind";
 import { defineConfig } from "astro/config";
 
 export default defineConfig({
-	site: "https://338.rocks",
+	site: "https://blog.m4t1n.ir",
 	integrations: [sitemap(), mdx(), pagefind(), react()],
 	vite: {
 		plugins: [tailwindcss()],
