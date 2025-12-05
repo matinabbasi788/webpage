@@ -9,6 +9,8 @@ import Layout from "@layouts/Layout.astro";
 import { readingTime } from "@lib/utils";
 import { type CollectionEntry, getCollection, render } from "astro:content";
 
+export const prerender = true;
+
 export async function getStaticPaths() {
 	const posts = (await getCollection("blog"))
 		.filter((post) => !post.data.draft)
@@ -48,6 +50,12 @@ const nextPost = getNextPost();
 const prevPost = getPrevPost();
 
 const post = Astro.props;
+if (!post) {
+	return new Response(null, {
+		status: 404,
+		statusText: "Not Found",
+	});
+}
 const { Content, headings } = await render(post);
 ---
 

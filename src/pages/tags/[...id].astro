@@ -5,6 +5,8 @@ import Container from "@components/Container.astro";
 import Layout from "@layouts/Layout.astro";
 import { getCollection } from "astro:content";
 
+export const prerender = true;
+
 export async function getStaticPaths() {
 	const posts = await getCollection("blog", ({ data }) => !data.draft);
 
@@ -22,6 +24,13 @@ export async function getStaticPaths() {
 
 const { id } = Astro.params;
 const { posts } = Astro.props;
+
+if (!posts || !Array.isArray(posts)) {
+	return new Response(null, {
+		status: 404,
+		statusText: "Not Found",
+	});
+}
 
 // Sort posts by date, most recent first
 const sortedPosts = posts.sort(
