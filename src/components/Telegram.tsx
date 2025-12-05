@@ -1,6 +1,7 @@
 import classnames from "classnames";
 import type { FC } from "react";
 import { useEffect, useState } from "react";
+import { DinoGame } from "./DinoGame";
 
 interface TelegramData {
 	bio: string;
@@ -245,9 +246,12 @@ export const Status: FC = () => {
 								</span>
 							</div>
 						) : (
-							<span className="text-sm font-semibold text-gray-800 dark:text-gray-100 capitalize tracking-wide">
-								Offline
-							</span>
+							<div className="flex items-center gap-3 flex-1 min-w-0">
+								<span className="text-sm font-semibold text-red-500 dark:text-red-400 capitalize tracking-wide flex-shrink-0">
+									Offline
+								</span>
+								<DinoGame />
+							</div>
 						)}
 					</div>
 				</div>

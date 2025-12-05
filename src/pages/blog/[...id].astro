@@ -234,11 +234,17 @@ const { Content, headings } = await render(post);
 			// Can be re-enabled if needed with proper implementation
 		}
 		
-		// 3D tilt effect for hero
+		// 3D tilt effect for hero (mouse + gyroscope)
 		function init3DTilt() {
 			const hero = document.querySelector('.hero-3d');
 			if (!hero) return;
 			
+			let mouseRotateX = 0;
+			let mouseRotateY = 0;
+			let deviceRotateX = 0;
+			let deviceRotateY = 0;
+			
+			// Mouse movement for desktop
 			hero.addEventListener('mousemove', (e) => {
 				const rect = hero.getBoundingClientRect();
 				const x = e.clientX - rect.left;
@@ -247,14 +253,63 @@ const { Content, headings } = await render(post);
 				const centerX = rect.width / 2;
 				const centerY = rect.height / 2;
 				
-				const rotateX = (y - centerY) / 20;
-				const rotateY = (centerX - x) / 20;
+				mouseRotateX = (y - centerY) / 20;
+				mouseRotateY = (centerX - x) / 20;
 				
-				hero.style.transform = 'perspective(1000px) rotateX(' + rotateX + 'deg) rotateY(' + rotateY + 'deg) scale3d(1.02, 1.02, 1.02)';
+				updateTransform();
 			});
 			
 			hero.addEventListener('mouseleave', () => {
-				hero.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
+				mouseRotateX = 0;
+				mouseRotateY = 0;
+				updateTransform();
+			});
+			
+			// Device orientation for mobile
+			function handleOrientation(e) {
+				if (e.beta !== null && e.gamma !== null) {
+					// beta: front-to-back tilt (-180 to 180)
+					// gamma: left-to-right tilt (-90 to 90)
+					deviceRotateX = (e.beta - 90) / 15; // Convert to rotation
+					deviceRotateY = e.gamma / 15;
+					updateTransform();
+				}
+			}
+			
+			function updateTransform() {
+				const totalRotateX = mouseRotateX + deviceRotateX;
+				const totalRotateY = mouseRotateY + deviceRotateY;
+				
+				// Limit rotation for better UX
+				const maxRotation = 15;
+				const clampedX = Math.max(-maxRotation, Math.min(maxRotation, totalRotateX));
+				const clampedY = Math.max(-maxRotation, Math.min(maxRotation, totalRotateY));
+				
+				hero.style.transform = 'perspective(1000px) rotateX(' + clampedX + 'deg) rotateY(' + clampedY + 'deg) scale3d(1.02, 1.02, 1.02)';
+			}
+			
+			// Request permission for device orientation (iOS 13+)
+			if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+				// iOS 13+ requires permission
+				DeviceOrientationEvent.requestPermission()
+					.then(response => {
+						if (response === 'granted') {
+							window.addEventListener('deviceorientation', handleOrientation);
+						}
+					})
+					.catch(console.error);
+			} else if (window.DeviceOrientationEvent) {
+				// Android and older iOS
+				window.addEventListener('deviceorientation', handleOrientation);
+			}
+			
+			// Reset on device orientation change
+			window.addEventListener('orientationchange', () => {
+				setTimeout(() => {
+					deviceRotateX = 0;
+					deviceRotateY = 0;
+					updateTransform();
+				}, 100);
 			});
 		}
 		

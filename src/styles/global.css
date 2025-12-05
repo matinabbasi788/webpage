@@ -72,7 +72,7 @@
 		@apply prose prose-lg prose-neutral dark:prose-invert prose-img:mx-auto prose-img:my-auto max-w-full;
 		@apply prose-headings:font-semibold;
 		@apply prose-headings:text-black dark:prose-headings:text-neutral-200;
-		@apply prose-p:leading-relaxed prose-p:text-black/80 dark:prose-p:text-neutral-300 prose-p:text-justify;
+		@apply prose-p:leading-relaxed prose-p:text-black/80 dark:prose-p:text-neutral-300;
 		@apply prose-img:rounded-3xl prose-img:shadow-2xl prose-img:border prose-img:border-black/10 prose-img:transition-all prose-img:duration-700 prose-img:hover:scale-[1.03] prose-img:hover:shadow-[0_25px_50px_-12px_rgba(168,85,247,0.5)] prose-img:hover:rotate-1 dark:prose-img:border-neutral-800/50;
 		@apply prose-code:text-purple-700 prose-code:bg-purple-50 prose-code:dark:text-purple-300 prose-code:dark:bg-purple-950/40 prose-code:px-2.5 prose-code:py-1.5 prose-code:rounded-md prose-code:text-sm prose-code:font-mono prose-code:font-medium prose-code:border prose-code:border-purple-200/50 prose-code:dark:border-purple-800/50 prose-code:shadow-sm prose-code:transition-all prose-code:duration-200;
 		@apply prose-pre:bg-gradient-to-br prose-pre:from-neutral-50 prose-pre:via-neutral-100 prose-pre:to-neutral-50 prose-pre:dark:from-neutral-950 prose-pre:dark:via-neutral-900 prose-pre:dark:to-neutral-950 prose-pre:shadow-2xl prose-pre:rounded-2xl prose-pre:border prose-pre:border-neutral-200/50 prose-pre:dark:border-neutral-800/50 prose-pre:overflow-hidden prose-pre:backdrop-blur-sm prose-pre:p-0;
@@ -561,6 +561,20 @@ article code:not(pre code):hover {
 	@apply shadow-md;
 }
 
+/* Math formulas (katex) - keep in one line */
+article .katex,
+article .katex-display {
+	white-space: nowrap;
+	display: inline-block;
+}
+
+article .katex-display {
+	display: block;
+	white-space: normal;
+	text-align: center;
+	margin: 1em 0;
+}
+
 /* Enhanced link hover */
 article a {
 	position: relative;
@@ -651,3 +665,86 @@ article a:hover::after {
 		transform: translateY(0);
 	}
 }
+
+/* Dino Game Styles */
+.dino-game-container {
+	position: relative;
+	flex: 1 1 0%;
+	min-width: 0;
+	height: 60px;
+	overflow: visible;
+}
+
+.dino-game-canvas {
+	width: 100%;
+	height: 100%;
+	display: block;
+	background: transparent;
+}
+
+.dino-game-instructions {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 0.75rem;
+	font-weight: 500;
+	pointer-events: none;
+	color: rgb(107 114 128);
+	background: transparent;
+}
+
+.dark .dino-game-instructions {
+	color: rgb(156 163 175);
+}
+
+.dino-game-overlay {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	background: rgba(239, 68, 68, 0.9);
+	border-radius: 0.5rem;
+	color: white;
+	pointer-events: none;
+}
+
+.dark .dino-game-overlay {
+	background: rgba(220, 38, 38, 0.9);
+}
+
+.dino-game-over-text {
+	font-size: 0.875rem;
+	font-weight: bold;
+	margin-bottom: 0.25rem;
+}
+
+.dino-game-over-score {
+	font-size: 0.75rem;
+	margin-bottom: 0.25rem;
+}
+
+.dino-game-over-hint {
+	font-size: 0.75rem;
+	opacity: 0.75;
+}
+
+.dino-game-mobile-message {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 0.75rem;
+	color: rgb(107 114 128);
+	text-align: center;
+	padding: 0 1rem;
+}
+
+.dark .dino-game-mobile-message {
+	color: rgb(156 163 175);
+}
+
