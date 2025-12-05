@@ -60,53 +60,205 @@ const { Content, headings } = await render(post);
 ---
 
 <Layout title={post.data.title} description={post.data.description}>
+	<!-- Animated Background Particles -->
+	<div id="particles-container" class="fixed inset-0 -z-10 pointer-events-none"></div>
+	
 	<Container>
-		<div class="animate">
-			<BackToPrevious href="/blog">back to blog</BackToPrevious>
-		</div>
-		<div class="my-10 space-y-1">
-			<div class="animate flex items-center gap-1.5">
-				<div class="font-base text-sm">
-					<FormattedDate date={post.data.date} />
+		<!-- Hero Section with 3D Glassmorphism -->
+		<div class="hero-3d relative mb-16 overflow-hidden rounded-3xl border border-white/20 bg-gradient-to-br from-neutral-50/80 via-purple-50/30 via-pink-50/30 to-blue-50/30 p-12 backdrop-blur-xl shadow-2xl dark:from-neutral-900/80 dark:via-purple-950/30 dark:via-pink-950/30 dark:to-blue-950/30 dark:border-white/10">
+			<!-- Animated gradient orbs -->
+			<div class="absolute -top-40 -right-40 h-80 w-80 rounded-full bg-gradient-to-r from-purple-500/30 to-pink-500/30 blur-3xl animate-pulse-slow"></div>
+			<div class="absolute -bottom-40 -left-40 h-80 w-80 rounded-full bg-gradient-to-r from-blue-500/30 to-cyan-500/30 blur-3xl animate-pulse-slow" style="animation-delay: 1s;"></div>
+			
+			<!-- Grid pattern overlay -->
+			<div class="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.02)_1px,transparent_1px)] bg-[size:50px_50px] dark:bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)]"></div>
+			
+			<div class="relative z-10">
+				<div class="animate mb-6">
+					<BackToPrevious href="/blog" class="magnetic-btn inline-flex items-center gap-2 rounded-full border border-black/10 bg-white/90 px-4 py-2 text-sm backdrop-blur-md transition-all duration-300 hover:scale-110 hover:border-purple-500/50 hover:bg-white hover:shadow-xl hover:shadow-purple-500/20 dark:border-white/20 dark:bg-neutral-800/90 dark:hover:border-purple-400/50 dark:hover:bg-neutral-800">
+						← back to blog
+					</BackToPrevious>
 				</div>
-				&bull;
+				
+				<div class="animate mb-8 flex items-center gap-3 text-sm text-black/60 dark:text-white/60">
+					<div class="glass-card flex items-center gap-2 rounded-full bg-white/70 px-4 py-2 backdrop-blur-md dark:bg-neutral-800/70">
+						<FormattedDate date={post.data.date} />
+					</div>
+					<span class="text-black/30 dark:text-white/30">•</span>
+					{
+						post.body && (
+							<div class="glass-card flex items-center gap-2 rounded-full bg-white/70 px-4 py-2 backdrop-blur-md dark:bg-neutral-800/70">
+								{readingTime(post.body)}
+							</div>
+						)
+					}
+				</div>
+				
+				<h1 class="animate title-3d mb-8 bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 bg-clip-text text-5xl font-extrabold leading-tight text-transparent drop-shadow-2xl dark:from-purple-400 dark:via-pink-400 dark:to-blue-400 md:text-6xl lg:text-7xl xl:text-8xl">
+					<span class="inline-block">{post.data.title}</span>
+				</h1>
+				
 				{
-					post.body && (
-						<div class="font-base text-sm">
-							{readingTime(post.body)}
+					post.data.tags && post.data.tags?.length > 0 ? (
+						<div class="animate flex flex-wrap gap-3">
+							{post.data.tags.map((tag) => (
+								<a
+									href={`/tags/${tag}`}
+									class="magnetic-tag group relative overflow-hidden rounded-full border border-black/10 bg-white/90 px-5 py-2.5 text-sm font-semibold backdrop-blur-md transition-all duration-500 hover:scale-125 hover:border-purple-500/50 hover:bg-white hover:shadow-2xl hover:shadow-purple-500/30 dark:border-white/20 dark:bg-neutral-800/90 dark:hover:border-purple-400/50 dark:hover:bg-neutral-800"
+								>
+									<span class="relative z-10 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent dark:from-purple-400 dark:to-pink-400">{tag}</span>
+									<span class="absolute inset-0 -z-0 bg-gradient-to-r from-purple-500/30 via-pink-500/30 to-blue-500/30 opacity-0 transition-opacity duration-500 group-hover:opacity-100 blur-xl"></span>
+									<span class="absolute inset-0 -z-0 bg-gradient-to-r from-purple-500/20 via-pink-500/20 to-blue-500/20 opacity-0 transition-opacity duration-500 group-hover:opacity-100"></span>
+								</a>
+							))}
 						</div>
-					)
+					) : null
 				}
 			</div>
-			<h1
-				class="animate text-3xl font-semibold text-black dark:text-white"
-			>
-				{post.data.title}
-			</h1>
-			{
-				post.data.tags && post.data.tags?.length > 0 ? (
-					<div class="animate flex gap-2 pt-1">
-						{post.data.tags.map((tag) => (
-							<a
-								href={`/tags/${tag}`}
-								class="rounded-sm border border-black/15 px-2 py-1 text-sm transition-colors duration-300 ease-in-out hover:bg-black/5 hover:text-black focus-visible:bg-black/5 focus-visible:text-black dark:border-white/20 dark:hover:bg-white/5 dark:hover:text-white dark:focus-visible:bg-white/5 dark:focus-visible:text-white"
-							>
-								{tag}
-							</a>
-						))}
-					</div>
-				) : null
-			}
 		</div>
-		{headings.length > 0 && <TableOfContents headings={headings} />}
-		<article class="animate">
-			<Content />
-			<div class="mt-24">
+		
+		{headings.length > 0 && (
+			<div class="mb-12">
+				<TableOfContents headings={headings} />
+			</div>
+		)}
+		
+		<article class="animate relative pb-8">
+			<!-- Animated gradient line with glow -->
+			<div class="absolute -left-6 top-0 bottom-0 w-1.5 rounded-full bg-gradient-to-b from-purple-500/40 via-pink-500/40 to-blue-500/40 opacity-30 transition-all duration-700 hover:opacity-100 hover:w-2 shadow-lg shadow-purple-500/50"></div>
+			
+			<!-- Content with parallax effect -->
+			<div class="parallax-content relative z-10">
+				<Content />
+			</div>
+			
+			<div class="glass-card relative z-10 mt-24 rounded-3xl border border-white/20 bg-gradient-to-br from-white/60 to-white/40 p-10 backdrop-blur-2xl shadow-2xl dark:from-neutral-900/60 dark:to-neutral-800/40 dark:border-white/10">
 				<PostNavigation prevPost={prevPost} nextPost={nextPost} />
 			</div>
-			<div class="mt-24">
+			
+			<div class="glass-card relative z-10 mt-12 rounded-3xl border border-white/20 bg-gradient-to-br from-white/60 to-white/40 p-10 backdrop-blur-2xl shadow-2xl dark:from-neutral-900/60 dark:to-neutral-800/40 dark:border-white/10">
 				<Giscus />
 			</div>
 		</article>
 	</Container>
+	
+	<script is:inline>
+		// Particle system
+		function createParticles() {
+			const container = document.getElementById('particles-container');
+			if (!container) return;
+			
+			const particleCount = 50;
+			for (let i = 0; i < particleCount; i++) {
+				const particle = document.createElement('div');
+				particle.className = 'particle';
+				const size = Math.random() * 4 + 2;
+				const left = Math.random() * 100;
+				const top = Math.random() * 100;
+				const duration = 10 + Math.random() * 20;
+				const delay = Math.random() * 5;
+				const color1 = Math.random() > 0.5 ? 'rgba(168, 85, 247, 0.4)' : 'rgba(236, 72, 153, 0.4)';
+				const color2 = Math.random() > 0.5 ? 'rgba(168, 85, 247, 0.5)' : 'rgba(236, 72, 153, 0.5)';
+				
+				particle.style.cssText = `
+					position: absolute;
+					width: ${size}px;
+					height: ${size}px;
+					background: ${color1};
+					border-radius: 50%;
+					left: ${left}%;
+					top: ${top}%;
+					pointer-events: none;
+					animation: float-particle ${duration}s infinite ease-in-out;
+					animation-delay: ${delay}s;
+					box-shadow: 0 0 10px ${color2};
+				`;
+				container.appendChild(particle);
+			}
+		}
+		
+		// Magnetic hover effect
+		function initMagneticEffect() {
+			const magneticElements = document.querySelectorAll('.magnetic-btn, .magnetic-tag');
+			
+			magneticElements.forEach(el => {
+				el.addEventListener('mousemove', (e) => {
+					const rect = el.getBoundingClientRect();
+					const x = e.clientX - rect.left - rect.width / 2;
+					const y = e.clientY - rect.top - rect.height / 2;
+					
+					el.style.transform = 'translate(' + (x * 0.3) + 'px, ' + (y * 0.3) + 'px) scale(1.05)';
+				});
+				
+				el.addEventListener('mouseleave', () => {
+					el.style.transform = 'translate(0, 0) scale(1)';
+				});
+			});
+		}
+		
+		// Parallax effect (disabled for now to prevent layout issues)
+		function initParallax() {
+			// Parallax disabled to prevent layout issues
+			// Can be re-enabled if needed with proper implementation
+		}
+		
+		// 3D tilt effect for hero
+		function init3DTilt() {
+			const hero = document.querySelector('.hero-3d');
+			if (!hero) return;
+			
+			hero.addEventListener('mousemove', (e) => {
+				const rect = hero.getBoundingClientRect();
+				const x = e.clientX - rect.left;
+				const y = e.clientY - rect.top;
+				
+				const centerX = rect.width / 2;
+				const centerY = rect.height / 2;
+				
+				const rotateX = (y - centerY) / 20;
+				const rotateY = (centerX - x) / 20;
+				
+				hero.style.transform = 'perspective(1000px) rotateX(' + rotateX + 'deg) rotateY(' + rotateY + 'deg) scale3d(1.02, 1.02, 1.02)';
+			});
+			
+			hero.addEventListener('mouseleave', () => {
+				hero.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
+			});
+		}
+		
+		// Smooth scroll reveal animation
+		function initAnimations() {
+			createParticles();
+			initMagneticEffect();
+			initParallax();
+			init3DTilt();
+			
+			const observerOptions = {
+				threshold: 0.1,
+				rootMargin: '0px 0px -50px 0px'
+			};
+			
+			const observer = new IntersectionObserver((entries) => {
+				entries.forEach(entry => {
+					if (entry.isIntersecting) {
+						entry.target.classList.add('show');
+					}
+				});
+			}, observerOptions);
+			
+			document.querySelectorAll('.animate').forEach(el => {
+				observer.observe(el);
+			});
+		}
+		
+		// Initialize on DOM ready
+		if (document.readyState === 'loading') {
+			document.addEventListener('DOMContentLoaded', initAnimations);
+		} else {
+			initAnimations();
+		}
+		
+		// Re-initialize on Astro page swap
+		document.addEventListener('astro:after-swap', initAnimations);
+	</script>
 </Layout>
